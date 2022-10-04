@@ -8,3 +8,6 @@
 
 ## svg
 ![](./svg/dak_logo.svg)
+
+### logotype
+![](./svg/dak_logotype.svg)
