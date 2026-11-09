@@ -336,6 +336,15 @@ export const Genesis: React.FC<GenesisProps> = (props) => {
                   scale={pulse}
                   transform={directionalScale(p, sq.angle, sq.along, sq.across)}
                 />
+                {tarpOpacity > 0.01 && frame >= at(T.tarp) ? (
+                  <Peg
+                    peg={peg}
+                    color={palette.onTarp}
+                    ring={ringOpen}
+                    scale={pulse}
+                    opacity={Math.min(1, tarpOpacity / 0.92) * Math.min(1, unfold)}
+                  />
+                ) : null}
               </g>
             );
           })
