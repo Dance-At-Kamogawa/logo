@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "extract": "tsx scripts/extract-logo.ts",
     "render": "tsx scripts/render.ts",
-    "still": "remotion still"
+    "still": "remotion still",
+    "stills": "tsx scripts/stills.ts"
   },
   "dependencies": {
     "@remotion/cli": "4.0.542",

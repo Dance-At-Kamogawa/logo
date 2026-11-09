@@ -41,3 +41,19 @@ export const gatedEnvelope = (
   if (beat < from || beat > to + 1) return 0;
   return beatEnvelope(beat - from, opts);
 };
+
+/** Beat clock for the current frame. `at(beat)` converts beats to frames. */
+export type BeatClock = {
+  readonly frame: number;
+  readonly fps: number;
+  /** Frames per beat (fractional). */
+  readonly fpb: number;
+  /** Current fractional beat. */
+  readonly beat: number;
+  readonly at: (beat: number) => number;
+};
+
+export const makeBeatClock = (frame: number, fps: number, bpm: number): BeatClock => {
+  const fpb = framesPerBeat(bpm, fps);
+  return { frame, fps, fpb, beat: frame / fpb, at: (b: number) => b * fpb };
+};
