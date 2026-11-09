@@ -1,0 +1,43 @@
+{
+  "name": "dak-motion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Motion logo for #鴨川で踊るか (Dance at Kamogawa), built with Remotion",
+  "license": "UNLICENSED",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "typecheck": "tsc --noEmit",
+    "extract": "tsx scripts/extract-logo.ts",
+    "render": "tsx scripts/render.ts",
+    "still": "remotion still"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.542",
+    "@remotion/paths": "4.0.542",
+    "@remotion/zod-types": "4.0.542",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.542",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "4.0.542",
+    "@remotion/renderer": "4.0.542",
+    "@types/node": "22.20.5",
+    "@types/react": "19.3.0",
+    "svgpath": "2.6.0",
+    "svgson": "5.3.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}
