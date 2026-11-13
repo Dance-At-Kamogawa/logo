@@ -5,6 +5,8 @@ import { Delta, deltaDefaults, deltaDuration, deltaSchema } from "./compositions
 import { Genesis, genesisDefaults, genesisDuration, genesisSchema } from "./compositions/Genesis";
 import { Stinger, stingerDefaults, stingerDuration, stingerSchema } from "./compositions/Stinger";
 import { TarpDrop, tarpDropDefaults, tarpDropDuration, tarpDropSchema } from "./compositions/TarpDrop";
+import { Liquid, liquidCompDefaults, liquidDuration, liquidSchema } from "./compositions/Liquid";
+import { LiquidLoop, liquidLoopDefaults, liquidLoopDuration, liquidLoopSchema } from "./compositions/LiquidLoop";
 import { StaticLogo } from "./compositions/StaticLogo";
 import { baseSchema, defaultBaseProps } from "./lib/schema";
 
@@ -89,6 +91,36 @@ export const RemotionRoot: React.FC = () => (
           defaultProps={stingerDefaults}
           calculateMetadata={({ props }) => ({ durationInFrames: stingerDuration(props.bpm, FPS) })}
           durationInFrames={stingerDuration(stingerDefaults.bpm, FPS)}
+          fps={FPS}
+          {...dim}
+        />
+      ))}
+    </Folder>
+    <Folder name="Liquid">
+      {SIZE_ENTRIES.map(([size, dim]) => (
+        <Composition
+          key={size}
+          id={`Liquid-${size}`}
+          component={Liquid}
+          schema={liquidSchema}
+          defaultProps={liquidCompDefaults}
+          calculateMetadata={({ props }) => ({ durationInFrames: liquidDuration(props.bpm, FPS) })}
+          durationInFrames={liquidDuration(liquidCompDefaults.bpm, FPS)}
+          fps={FPS}
+          {...dim}
+        />
+      ))}
+    </Folder>
+    <Folder name="LiquidLoop">
+      {SIZE_ENTRIES.map(([size, dim]) => (
+        <Composition
+          key={size}
+          id={`LiquidLoop-${size}`}
+          component={LiquidLoop}
+          schema={liquidLoopSchema}
+          defaultProps={liquidLoopDefaults}
+          calculateMetadata={({ props }) => ({ durationInFrames: liquidLoopDuration(props.bpm, FPS) })}
+          durationInFrames={liquidLoopDuration(liquidLoopDefaults.bpm, FPS)}
           fps={FPS}
           {...dim}
         />
