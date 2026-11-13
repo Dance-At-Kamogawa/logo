@@ -8,6 +8,13 @@ import { TarpDrop, tarpDropDefaults, tarpDropDuration, tarpDropSchema } from "./
 import { Liquid, liquidCompDefaults, liquidDuration, liquidSchema } from "./compositions/Liquid";
 import { LiquidLoop, liquidLoopDefaults, liquidLoopDuration, liquidLoopSchema } from "./compositions/LiquidLoop";
 import { StaticLogo } from "./compositions/StaticLogo";
+import { TarpRain, tarpRainCompDefaults, tarpRainDuration, tarpRainSchema } from "./compositions/TarpRain";
+import {
+  TarpRainLoop,
+  tarpRainLoopDefaults,
+  tarpRainLoopDuration,
+  tarpRainLoopSchema,
+} from "./compositions/TarpRainLoop";
 import { baseSchema, defaultBaseProps } from "./lib/schema";
 
 export const FPS = 60;
@@ -136,6 +143,31 @@ export const RemotionRoot: React.FC = () => (
         fps={FPS}
         width={1080}
         height={1080}
+      />
+    </Folder>
+    <Folder name="TarpRain">
+      {SIZE_ENTRIES.map(([size, dim]) => (
+        <Composition
+          key={size}
+          id={`TarpRain-${size}`}
+          component={TarpRain}
+          schema={tarpRainSchema}
+          defaultProps={tarpRainCompDefaults}
+          calculateMetadata={({ props }) => ({ durationInFrames: tarpRainDuration(props.bpm, FPS) })}
+          durationInFrames={tarpRainDuration(tarpRainCompDefaults.bpm, FPS)}
+          fps={FPS}
+          {...dim}
+        />
+      ))}
+      <Composition
+        id="TarpRainLoop-Wide"
+        component={TarpRainLoop}
+        schema={tarpRainLoopSchema}
+        defaultProps={tarpRainLoopDefaults}
+        calculateMetadata={({ props }) => ({ durationInFrames: tarpRainLoopDuration(props.bpm, FPS) })}
+        durationInFrames={tarpRainLoopDuration(tarpRainLoopDefaults.bpm, FPS)}
+        fps={FPS}
+        {...SIZES.Wide}
       />
     </Folder>
   </>

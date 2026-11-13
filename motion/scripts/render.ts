@@ -74,6 +74,15 @@ export const MATRIX: readonly Job[] = [
     kind: "master",
     hap: "dak-liquid-loop-1920x1080-hap.mov",
   },
+  // TarpRain (WebGL): rain beads on the blue tarp collecting into the logo.
+  { file: "dak-tarprain-1080x1080.mp4", composition: "TarpRain-Square", kind: "mp4" },
+  { file: "dak-tarprain-1920x1080.mp4", composition: "TarpRain-Wide", kind: "mp4" },
+  {
+    file: "dak-tarprain-loop-1920x1080.mp4",
+    composition: "TarpRainLoop-Wide",
+    kind: "master",
+    hap: "dak-tarprain-loop-1920x1080-hap.mov",
+  },
 ];
 
 const args = process.argv.slice(2);
