@@ -8,7 +8,7 @@
 import { renderStill, selectComposition } from "@remotion/renderer";
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import { browserExecutable, prepare } from "./lib";
+import { browserExecutable, chromiumOptions, prepare } from "./lib";
 
 const [id, outDir, framesArg, scaleArg, propsArg] = process.argv.slice(2);
 if (!id || !outDir || !framesArg) {
@@ -18,7 +18,13 @@ if (!id || !outDir || !framesArg) {
 
 const serveUrl = await prepare();
 const inputProps = propsArg ? (JSON.parse(propsArg) as Record<string, unknown>) : {};
-const composition = await selectComposition({ serveUrl, id, inputProps, browserExecutable: browserExecutable() });
+const composition = await selectComposition({
+  serveUrl,
+  id,
+  inputProps,
+  browserExecutable: browserExecutable(),
+  chromiumOptions: chromiumOptions(),
+});
 
 const frames = framesArg.startsWith("all:")
   ? Array.from(
@@ -38,6 +44,7 @@ for (const frame of frames) {
     inputProps,
     scale: scaleArg ? Number(scaleArg) : 1,
     browserExecutable: browserExecutable(),
+    chromiumOptions: chromiumOptions(),
     overwrite: true,
   });
   console.log(output);
