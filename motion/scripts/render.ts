@@ -101,6 +101,15 @@ export const MATRIX: readonly Job[] = [
     kind: "master",
     hap: "dak-tarprain-loop-1920x1080-hap.mov",
   },
+  // Caustics (WebGL): floating glass water, caustic light that focuses into the logo.
+  { file: "dak-caustics-1080x1080.mp4", composition: "Caustics-Square", kind: "mp4" },
+  { file: "dak-caustics-1920x1080.mp4", composition: "Caustics-Wide", kind: "mp4" },
+  {
+    file: "dak-caustics-loop-1920x1080.mp4",
+    composition: "CausticsLoop-Wide",
+    kind: "master",
+    hap: "dak-caustics-loop-1920x1080-hap.mov",
+  },
 ];
 
 const args = process.argv.slice(2);

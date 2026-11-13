@@ -21,6 +21,7 @@ import {
 } from "./compositions/CondensationLoop";
 
 import { TarpRain, tarpRainCompDefaults, tarpRainDuration, tarpRainSchema } from "./compositions/TarpRain";
+import { Caustics, causticsCompDefaults, causticsDuration, causticsSchema } from "./compositions/Caustics";
 import { StaticLogo } from "./compositions/StaticLogo";
 import { DropLens, dropLensCompDefaults, dropLensDuration, dropLensSchema } from "./compositions/DropLens";
 import {
@@ -230,6 +231,31 @@ export const RemotionRoot: React.FC = () => (
         defaultProps={tarpRainLoopDefaults}
         calculateMetadata={({ props }) => ({ durationInFrames: tarpRainLoopDuration(props.bpm, FPS) })}
         durationInFrames={tarpRainLoopDuration(tarpRainLoopDefaults.bpm, FPS)}
+        fps={FPS}
+        {...SIZES.Wide}
+      />
+    </Folder>
+    <Folder name="Caustics">
+      {SIZE_ENTRIES.map(([size, dim]) => (
+        <Composition
+          key={size}
+          id={`Caustics-${size}`}
+          component={Caustics}
+          schema={causticsSchema}
+          defaultProps={causticsCompDefaults}
+          calculateMetadata={({ props }) => ({ durationInFrames: causticsDuration(props.bpm, FPS) })}
+          durationInFrames={causticsDuration(causticsCompDefaults.bpm, FPS)}
+          fps={FPS}
+          {...dim}
+        />
+      ))}
+      <Composition
+        id="CausticsLoop-Wide"
+        component={CausticsLoop}
+        schema={causticsLoopSchema}
+        defaultProps={causticsLoopDefaults}
+        calculateMetadata={({ props }) => ({ durationInFrames: causticsLoopDuration(props.bpm, FPS) })}
+        durationInFrames={causticsLoopDuration(causticsLoopDefaults.bpm, FPS)}
         fps={FPS}
         {...SIZES.Wide}
       />
