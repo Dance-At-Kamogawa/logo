@@ -8,12 +8,13 @@
  * Env:
  *   RENDER_CONCURRENCY           frames rendered in parallel (default: Remotion's default)
  *   REMOTION_BROWSER_EXECUTABLE  use an existing Chromium instead of Chrome Headless Shell
+ *   REMOTION_GL                  WebGL backend (default swangle = software, works without a GPU)
  */
 import { renderMedia, selectComposition, type Codec } from "@remotion/renderer";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
-import { browserExecutable, prepare, ROOT } from "./lib";
+import { browserExecutable, chromiumOptions, prepare, ROOT } from "./lib";
 
 type Preset = "ink" | "white" | "tarp";
 
@@ -21,10 +22,13 @@ type Job = {
   /** Output file name (inside out/). */
   readonly file: string;
   readonly composition: string;
-  readonly preset: Preset;
+  /** Colour preset for the line-art patterns; the Liquid patterns use their own defaults. */
+  readonly preset?: Preset;
   readonly kind: "mp4" | "prores-alpha" | "gif";
   /** Extra post-processing derived from this job's output. */
   readonly hapAlpha?: string;
+  /** HAP (no alpha) derived from this job's output, for Resolume. */
+  readonly hap?: string;
 };
 
 const OUT = resolve(ROOT, "out");
@@ -56,6 +60,15 @@ export const MATRIX: readonly Job[] = [
   },
   // Small GIF for SNS / chat.
   { file: "dak-stinger-540x540-ink.gif", composition: "Stinger-Square", preset: "ink", kind: "gif" },
+  // Liquid (WebGL): the flyer look, aqua water on black.
+  { file: "dak-liquid-1080x1080.mp4", composition: "Liquid-Square", kind: "mp4" },
+  { file: "dak-liquid-1920x1080.mp4", composition: "Liquid-Wide", kind: "mp4" },
+  {
+    file: "dak-liquid-loop-1920x1080.mp4",
+    composition: "LiquidLoop-Wide",
+    kind: "mp4",
+    hap: "dak-liquid-loop-1920x1080-hap.mov",
+  },
 ];
 
 const args = process.argv.slice(2);
@@ -69,7 +82,10 @@ const only = args
 const jobs = MATRIX.filter((j) => !only || only.some((o) => j.file.toLowerCase().includes(o)));
 
 if (args.includes("--list")) {
-  for (const j of jobs) console.log(`${j.composition.padEnd(16)} ${j.kind.padEnd(13)} ${j.file}${j.hapAlpha ? ` (+ ${j.hapAlpha})` : ""}`);
+  for (const j of jobs) {
+    const extra = j.hapAlpha ?? j.hap;
+    console.log(`${j.composition.padEnd(16)} ${j.kind.padEnd(13)} ${j.file}${extra ? ` (+ ${extra})` : ""}`);
+  }
   process.exit(0);
 }
 if (jobs.length === 0) {
@@ -89,20 +105,23 @@ mkdirSync(OUT, { recursive: true });
 const serveUrl = await prepare();
 const concurrency = process.env.RENDER_CONCURRENCY ? Number(process.env.RENDER_CONCURRENCY) : null;
 const started = Date.now();
+console.log(`WebGL: ${chromiumOptions().gl ?? "default"}`);
 
 for (const [i, job] of jobs.entries()) {
-  const inputProps = { preset: job.preset };
+  const inputProps = job.preset ? { preset: job.preset } : {};
   const composition = await selectComposition({
     serveUrl,
     id: job.composition,
     inputProps,
     browserExecutable: browserExecutable(),
+    chromiumOptions: chromiumOptions(),
   });
   const outputLocation = resolve(OUT, job.file);
   console.log(
     `\n[${i + 1}/${jobs.length}] ${job.composition} (${composition.width}x${composition.height}, ${composition.durationInFrames}f) -> ${job.file}`,
   );
 
+  const jobStarted = Date.now();
   const codec: Codec = job.kind === "mp4" ? "h264" : job.kind === "gif" ? "gif" : "prores";
   let lastLogged = -1;
   await renderMedia({
@@ -113,6 +132,7 @@ for (const [i, job] of jobs.entries()) {
     inputProps,
     concurrency,
     browserExecutable: browserExecutable(),
+    chromiumOptions: chromiumOptions(),
     overwrite: true,
     ...(job.kind === "mp4" ? { crf: 16, pixelFormat: "yuv420p" as const, imageFormat: "jpeg" as const, jpegQuality: 95 } : {}),
     ...(job.kind === "prores-alpha"
@@ -127,13 +147,22 @@ for (const [i, job] of jobs.entries()) {
       }
     },
   });
-  console.log(`\n  ✓ ${job.file} ${mb(outputLocation)}`);
+  const secs = (Date.now() - jobStarted) / 1000;
+  console.log(
+    `\n  ✓ ${job.file} ${mb(outputLocation)} in ${secs.toFixed(0)} s (${((secs * 1000) / composition.durationInFrames).toFixed(0)} ms/frame)`,
+  );
 
   if (job.hapAlpha) {
     const hap = resolve(OUT, job.hapAlpha);
     // HAP Alpha for Resolume / VDMX. -chunks lets the decoder use several threads.
     run("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-i", outputLocation, "-c:v", "hap", "-format", "hap_alpha", "-chunks", "4", hap]);
     console.log(`  ✓ ${job.hapAlpha} ${mb(hap)}`);
+  }
+  if (job.hap) {
+    const hap = resolve(OUT, job.hap);
+    // Plain HAP (no alpha): the loop is on black, which screen/add-blends away in Resolume.
+    run("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-i", outputLocation, "-c:v", "hap", "-format", "hap", "-chunks", "4", hap]);
+    console.log(`  ✓ ${job.hap} ${mb(hap)}`);
   }
 }
 
