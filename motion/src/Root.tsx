@@ -20,6 +20,7 @@ import {
   condensationLoopSchema,
 } from "./compositions/CondensationLoop";
 
+import { TarpRain, tarpRainCompDefaults, tarpRainDuration, tarpRainSchema } from "./compositions/TarpRain";
 import { StaticLogo } from "./compositions/StaticLogo";
 import { DropLens, dropLensCompDefaults, dropLensDuration, dropLensSchema } from "./compositions/DropLens";
 import {
@@ -204,6 +205,31 @@ export const RemotionRoot: React.FC = () => (
         defaultProps={condensationLoopDefaults}
         calculateMetadata={({ props }) => ({ durationInFrames: condensationLoopDuration(props.bpm, FPS) })}
         durationInFrames={condensationLoopDuration(condensationLoopDefaults.bpm, FPS)}
+        fps={FPS}
+        {...SIZES.Wide}
+      />
+    </Folder>
+    <Folder name="TarpRain">
+      {SIZE_ENTRIES.map(([size, dim]) => (
+        <Composition
+          key={size}
+          id={`TarpRain-${size}`}
+          component={TarpRain}
+          schema={tarpRainSchema}
+          defaultProps={tarpRainCompDefaults}
+          calculateMetadata={({ props }) => ({ durationInFrames: tarpRainDuration(props.bpm, FPS) })}
+          durationInFrames={tarpRainDuration(tarpRainCompDefaults.bpm, FPS)}
+          fps={FPS}
+          {...dim}
+        />
+      ))}
+      <Composition
+        id="TarpRainLoop-Wide"
+        component={TarpRainLoop}
+        schema={tarpRainLoopSchema}
+        defaultProps={tarpRainLoopDefaults}
+        calculateMetadata={({ props }) => ({ durationInFrames: tarpRainLoopDuration(props.bpm, FPS) })}
+        durationInFrames={tarpRainLoopDuration(tarpRainLoopDefaults.bpm, FPS)}
         fps={FPS}
         {...SIZES.Wide}
       />
