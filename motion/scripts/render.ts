@@ -74,6 +74,15 @@ export const MATRIX: readonly Job[] = [
     kind: "master",
     hap: "dak-liquid-loop-1920x1080-hap.mov",
   },
+  // DropLens (WebGL): glass droplets lensing a hidden logo, settling as the grommets.
+  { file: "dak-droplens-1080x1080.mp4", composition: "DropLens-Square", kind: "mp4" },
+  { file: "dak-droplens-1920x1080.mp4", composition: "DropLens-Wide", kind: "mp4" },
+  {
+    file: "dak-droplens-loop-1920x1080.mp4",
+    composition: "DropLensLoop-Wide",
+    kind: "master",
+    hap: "dak-droplens-loop-1920x1080-hap.mov",
+  },
 ];
 
 const args = process.argv.slice(2);

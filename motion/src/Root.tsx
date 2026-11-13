@@ -8,6 +8,13 @@ import { TarpDrop, tarpDropDefaults, tarpDropDuration, tarpDropSchema } from "./
 import { Liquid, liquidCompDefaults, liquidDuration, liquidSchema } from "./compositions/Liquid";
 import { LiquidLoop, liquidLoopDefaults, liquidLoopDuration, liquidLoopSchema } from "./compositions/LiquidLoop";
 import { StaticLogo } from "./compositions/StaticLogo";
+import { DropLens, dropLensCompDefaults, dropLensDuration, dropLensSchema } from "./compositions/DropLens";
+import {
+  DropLensLoop,
+  dropLensLoopDefaults,
+  dropLensLoopDuration,
+  dropLensLoopSchema,
+} from "./compositions/DropLensLoop";
 import { baseSchema, defaultBaseProps } from "./lib/schema";
 
 export const FPS = 60;
@@ -136,6 +143,31 @@ export const RemotionRoot: React.FC = () => (
         fps={FPS}
         width={1080}
         height={1080}
+      />
+    </Folder>
+    <Folder name="DropLens">
+      {SIZE_ENTRIES.map(([size, dim]) => (
+        <Composition
+          key={size}
+          id={`DropLens-${size}`}
+          component={DropLens}
+          schema={dropLensSchema}
+          defaultProps={dropLensCompDefaults}
+          calculateMetadata={({ props }) => ({ durationInFrames: dropLensDuration(props.bpm, FPS) })}
+          durationInFrames={dropLensDuration(dropLensCompDefaults.bpm, FPS)}
+          fps={FPS}
+          {...dim}
+        />
+      ))}
+      <Composition
+        id="DropLensLoop-Wide"
+        component={DropLensLoop}
+        schema={dropLensLoopSchema}
+        defaultProps={dropLensLoopDefaults}
+        calculateMetadata={({ props }) => ({ durationInFrames: dropLensLoopDuration(props.bpm, FPS) })}
+        durationInFrames={dropLensLoopDuration(dropLensLoopDefaults.bpm, FPS)}
+        fps={FPS}
+        {...SIZES.Wide}
       />
     </Folder>
   </>
