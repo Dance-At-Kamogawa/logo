@@ -16,7 +16,8 @@ concurrency:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # Software WebGL is slow; the public repo has free minutes, so leave headroom (GitHub caps jobs at 6 h).
+    timeout-minutes: 300
     defaults:
       run:
         working-directory: motion
