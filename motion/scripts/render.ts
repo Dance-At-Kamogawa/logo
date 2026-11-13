@@ -74,6 +74,15 @@ export const MATRIX: readonly Job[] = [
     kind: "master",
     hap: "dak-liquid-loop-1920x1080-hap.mov",
   },
+  // Condensation (WebGL): fogged window at night, drops running down, the logo behind the glass.
+  { file: "dak-condensation-1080x1080.mp4", composition: "Condensation-Square", kind: "mp4" },
+  { file: "dak-condensation-1920x1080.mp4", composition: "Condensation-Wide", kind: "mp4" },
+  {
+    file: "dak-condensation-loop-1920x1080.mp4",
+    composition: "CondensationLoop-Wide",
+    kind: "master",
+    hap: "dak-condensation-loop-1920x1080-hap.mov",
+  },
 ];
 
 const args = process.argv.slice(2);

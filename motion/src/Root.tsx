@@ -7,6 +7,18 @@ import { Stinger, stingerDefaults, stingerDuration, stingerSchema } from "./comp
 import { TarpDrop, tarpDropDefaults, tarpDropDuration, tarpDropSchema } from "./compositions/TarpDrop";
 import { Liquid, liquidCompDefaults, liquidDuration, liquidSchema } from "./compositions/Liquid";
 import { LiquidLoop, liquidLoopDefaults, liquidLoopDuration, liquidLoopSchema } from "./compositions/LiquidLoop";
+import {
+  Condensation,
+  condensationCompDefaults,
+  condensationDuration,
+  condensationSchema,
+} from "./compositions/Condensation";
+import {
+  CondensationLoop,
+  condensationLoopDefaults,
+  condensationLoopDuration,
+  condensationLoopSchema,
+} from "./compositions/CondensationLoop";
 import { StaticLogo } from "./compositions/StaticLogo";
 import { baseSchema, defaultBaseProps } from "./lib/schema";
 
@@ -136,6 +148,31 @@ export const RemotionRoot: React.FC = () => (
         fps={FPS}
         width={1080}
         height={1080}
+      />
+    </Folder>
+    <Folder name="Condensation">
+      {SIZE_ENTRIES.map(([size, dim]) => (
+        <Composition
+          key={size}
+          id={`Condensation-${size}`}
+          component={Condensation}
+          schema={condensationSchema}
+          defaultProps={condensationCompDefaults}
+          calculateMetadata={({ props }) => ({ durationInFrames: condensationDuration(props.bpm, FPS) })}
+          durationInFrames={condensationDuration(condensationCompDefaults.bpm, FPS)}
+          fps={FPS}
+          {...dim}
+        />
+      ))}
+      <Composition
+        id="CondensationLoop-Wide"
+        component={CondensationLoop}
+        schema={condensationLoopSchema}
+        defaultProps={condensationLoopDefaults}
+        calculateMetadata={({ props }) => ({ durationInFrames: condensationLoopDuration(props.bpm, FPS) })}
+        durationInFrames={condensationLoopDuration(condensationLoopDefaults.bpm, FPS)}
+        fps={FPS}
+        {...SIZES.Wide}
       />
     </Folder>
   </>
