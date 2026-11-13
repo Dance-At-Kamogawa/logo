@@ -22,6 +22,18 @@ import {
 
 import { TarpRain, tarpRainCompDefaults, tarpRainDuration, tarpRainSchema } from "./compositions/TarpRain";
 import { Caustics, causticsCompDefaults, causticsDuration, causticsSchema } from "./compositions/Caustics";
+import {
+  TarpRainLoop,
+  tarpRainLoopDefaults,
+  tarpRainLoopDuration,
+  tarpRainLoopSchema,
+} from "./compositions/TarpRainLoop";
+import {
+  CausticsLoop,
+  causticsLoopDefaults,
+  causticsLoopDuration,
+  causticsLoopSchema,
+} from "./compositions/CausticsLoop";
 import { StaticLogo } from "./compositions/StaticLogo";
 import { DropLens, dropLensCompDefaults, dropLensDuration, dropLensSchema } from "./compositions/DropLens";
 import {
